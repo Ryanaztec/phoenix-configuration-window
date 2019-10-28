@@ -1,128 +1,160 @@
 <template>
-  <div id="wrapper">
-    <img id="logo" src="~@/assets/logo.png" alt="electron-vue">
-    <main>
-      <div class="left-side">
-        <span class="title">
-          Welcome to your new project!
-        </span>
-        <system-information></system-information>
-      </div>
+  <div class="container">
+    <div class="line-four">
+      <label>名称：</label>
+      <input class="player-name" type="text" v-model="playerName">
+      <label class="location-label">点位：</label>
+      <input class="location" type="text" v-model="location">
+    </div>
+    <div class="line-one">
+      <label>服务器地址：</label>
+      <input class="ip-address" type="text" id="ip1" v-model="ip1">
+      <input class="ip-address" type="text" id="ip2" v-model="ip2">
+      <input class="ip-address" type="text" id="ip3" v-model="ip3">
+      <input class="ip-address" type="text" id="ip4" v-model="ip4">
+      <label class="port-label">端口：</label>
+      <input class="port" type="text" id="port" v-model="port">
+    </div>
+    <div class="line-two">
+      <label>X:</label>
+      <input class="x-coordinate" type="text" v-model="xCoordinate">
+      <label class="position-label">Y:</label>
+      <input class="y-coordinate" type="text" v-model="yCoordinate">
+      <label class="position-label">宽:</label>
+      <input class="player-width" type="text" v-model="playerWidth">
+      <label class="position-label">高:</label>
+      <input class="player-height" type="text" v-model="playerHeight">
+    </div>
+    <div class="line-three">
+      <span class="notify-text">{{notifyWords}}</span>
+      <button class="button" @click="writeFile"><span class="button-text">保存</span></button>
+    </div>
 
-      <div class="right-side">
-        <div class="doc">
-          <div class="title">Getting Started</div>
-          <p>
-            electron-vue comes packed with detailed documentation that covers everything from
-            internal configurations, using the project structure, building your application,
-            and so much more.
-          </p>
-          <button @click="open('https://simulatedgreg.gitbooks.io/electron-vue/content/')">Read the Docs</button><br><br>
-        </div>
-        <div class="doc">
-          <div class="title alt">Other Documentation</div>
-          <button class="alt" @click="open('https://electron.atom.io/docs/')">Electron</button>
-          <button class="alt" @click="open('https://vuejs.org/v2/guide/')">Vue.js</button>
-        </div>
-      </div>
-    </main>
   </div>
 </template>
 
 <script>
-  import SystemInformation from './LandingPage/SystemInformation'
-
-  export default {
-    name: 'landing-page',
-    components: { SystemInformation },
-    methods: {
-      open (link) {
-        this.$electron.shell.openExternal(link)
+import fs from 'fs'
+const config = 'D:/player-data/config/config.json'
+export default {
+  data () {
+    return {
+      ip1: 127,
+      ip2: 0,
+      ip3: 0,
+      ip4: 1,
+      port: 8080,
+      xCoordinate: 0,
+      yCoordinate: 0,
+      playerWidth: 500,
+      playerHeight: 400,
+      playerName: '北京西单',
+      location: 'BJ01',
+      mac_address: '',
+      notifyWords: null
+    }
+  },
+  mounted () {
+    this.readFile()
+  },
+  methods: {
+    writeFile () {
+      const data = {
+        ip_address: this.ip1 + '.' + this.ip2 + '.' + this.ip3 + '.' + this.ip4,
+        mac_address: this.mac_address,
+        port: this.port,
+        window: {
+          top: parseInt(this.yCoordinate),
+          left: parseInt(this.xCoordinate),
+          width: parseInt(this.playerWidth),
+          height: parseInt(this.playerHeight)
+        },
+        name: this.playerName,
+        location: this.location
       }
+      fs.writeFile(config, JSON.stringify(data), (err) => {
+        if (err === null) {
+          this.notifyWords = '保存中...'
+          setTimeout(() => { this.notifyWords = '配置文件保存成功!' }, 500)
+        } else {
+          this.notifyWords = err.toString()
+        }
+      })
+    },
+    readFile () {
+      // eslint-disable-next-line handle-callback-err
+      fs.readFile(config, 'utf8', (err, data) => {
+        const list = JSON.parse(data)
+        const ip = list.ip_address.split('.')
+        this.port = list.port
+        this.xCoordinate = parseInt(list.window.left)
+        this.yCoordinate = parseInt(list.window.top)
+        this.playerWidth = parseInt(list.window.width)
+        this.playerHeight = parseInt(list.window.height)
+        this.ip1 = ip[0]
+        this.ip2 = ip[1]
+        this.ip3 = ip[2]
+        this.ip4 = ip[3]
+        this.playerName = list.name
+        this.location = list.location
+        this.mac_address = list.mac_address
+      })
     }
   }
+}
 </script>
 
 <style>
-  @import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro');
-
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+  .container {
+    padding: 10px 10px;
+    font-size: 16px;
+    font-family: 微软雅黑,serif;
   }
-
-  body { font-family: 'Source Sans Pro', sans-serif; }
-
-  #wrapper {
-    background:
-      radial-gradient(
-        ellipse at top left,
-        rgba(255, 255, 255, 1) 40%,
-        rgba(229, 229, 229, .9) 100%
-      );
-    height: 100vh;
-    padding: 60px 80px;
-    width: 100vw;
+  .player-name, .location {
+    width: 180px;
+    text-align: center;
   }
-
-  #logo {
-    height: auto;
-    margin-bottom: 20px;
-    width: 420px;
+  .ip-address, .port {
+    width: 60px;
+    text-align: center;
   }
-
-  main {
-    display: flex;
-    justify-content: space-between;
+  .x-coordinate, .y-coordinate, .player-width, .player-height {
+    width: 81px;
+    text-align: center;
   }
-
-  main > div { flex-basis: 50%; }
-
-  .left-side {
-    display: flex;
-    flex-direction: column;
+  .port-label {
+    margin-left: 7px;
   }
-
-  .welcome {
-    color: #555;
-    font-size: 23px;
-    margin-bottom: 10px;
+  .location-label {
+    margin-left: 20px;
   }
-
-  .title {
-    color: #2c3e50;
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 6px;
+  .position-label {
+    margin-left: 20px;
   }
-
-  .title.alt {
-    font-size: 18px;
-    margin-bottom: 10px;
+  .line-one, .line-two {
+    margin-top: 20px;
   }
-
-  .doc p {
-    color: black;
-    margin-bottom: 10px;
+  .button-text {
+    width:28px;
+    height:19px;
+    font-size:14px;
+    font-family: 微软雅黑, serif;
+    color:rgba(255,255,255,1);
+    line-height:19px;
   }
-
-  .doc button {
-    font-size: .8em;
-    cursor: pointer;
-    outline: none;
-    padding: 0.75em 2em;
-    border-radius: 2em;
-    display: inline-block;
-    color: #fff;
-    background-color: #4fc08d;
-    transition: all 0.15s ease;
-    box-sizing: border-box;
-    border: 1px solid #4fc08d;
+  .notify-text {
+    vertical-align: middle;
   }
-
-  .doc button.alt {
-    color: #42b983;
-    background-color: transparent;
+  .button {
+    position: absolute;
+    right: 33px;
+    width:120px;
+    height:30px;
+    background:rgba(64,139,245,1);
+    border-radius:3px;
+    border: rgba(64,139,245,1);
+  }
+  .line-three {
+    margin-top: 25px;
   }
 </style>
