@@ -6,15 +6,15 @@
       <label class="location-label">点位：</label>
       <input class="location" type="text" v-model="location">
     </div>
-    <div class="line-one">
-      <label>服务器地址：</label>
-      <input class="ip-address" type="text" id="ip1" v-model="ip1">
-      <input class="ip-address" type="text" id="ip2" v-model="ip2">
-      <input class="ip-address" type="text" id="ip3" v-model="ip3">
-      <input class="ip-address" type="text" id="ip4" v-model="ip4">
-      <label class="port-label">端口：</label>
-      <input class="port" type="text" id="port" v-model="port">
-    </div>
+<!--    <div class="line-one">-->
+<!--      <label>服务器地址：</label>-->
+<!--      <input class="ip-address" type="text" id="ip1" v-model="ip1">-->
+<!--      <input class="ip-address" type="text" id="ip2" v-model="ip2">-->
+<!--      <input class="ip-address" type="text" id="ip3" v-model="ip3">-->
+<!--      <input class="ip-address" type="text" id="ip4" v-model="ip4">-->
+<!--      <label class="port-label">端口：</label>-->
+<!--      <input class="port" type="text" id="port" v-model="port">-->
+<!--    </div>-->
     <div class="line-two">
       <label>X:</label>
       <input class="x-coordinate" type="text" v-model="xCoordinate">
