@@ -5,6 +5,8 @@
       <input class="player-name" type="text" v-model="playerName">
       <label class="location-label">点位：</label>
       <input class="location" type="text" v-model="location">
+      <label class="city-label">城市：</label>
+      <input class="city" type="text" v-model="city">
     </div>
     <div class="line-one">
       <label>服务器地址：</label>
@@ -51,7 +53,8 @@ export default {
       playerName: '北京西单',
       location: 'BJ01',
       mac_address: '',
-      notifyWords: null
+      notifyWords: null,
+      city: '北京'
     }
   },
   mounted () {
@@ -70,7 +73,8 @@ export default {
           height: parseInt(this.playerHeight)
         },
         name: this.playerName,
-        location: this.location
+        location: this.location,
+        city: this.city
       }
       fs.writeFile(config, JSON.stringify(data), (err) => {
         if (err === null) {
@@ -110,10 +114,11 @@ export default {
     font-size: 16px;
     font-family: 微软雅黑,serif;
   }
-  .player-name, .location {
-    width: 180px;
+  .player-name, .location, .city {
+    width: 90px;
     text-align: center;
   }
+
   .ip-address, .port {
     width: 60px;
     text-align: center;
@@ -125,7 +130,7 @@ export default {
   .port-label {
     margin-left: 7px;
   }
-  .location-label {
+  .location-label, .city-label {
     margin-left: 20px;
   }
   .position-label {
