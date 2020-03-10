@@ -66,6 +66,9 @@
     },
     methods: {
       submit () {
+        if (this.playerName.indexOf(this.location) === -1) { // 名称中不包含点位
+          this.playerName = this.playerName + this.location
+        }
         const data = {
           ip_address: this.ip1 + '.' + this.ip2 + '.' + this.ip3 + '.' + this.ip4,
           mac_address: this.mac_address,
@@ -141,7 +144,7 @@
     }
 
     .player-name, .location, .city {
-        width: 90px;
+        width: 110px;
         text-align: center;
     }
 
@@ -160,7 +163,7 @@
     }
 
     .location-label, .city-label {
-        margin-left: 20px;
+        margin-left: 0;
     }
 
     .position-label {
