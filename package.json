@@ -19,7 +19,7 @@
     "postinstall": "npm run lint:fix"
   },
   "build": {
-    "productName": "my-project",
+    "productName": "phoenix-player-configuration",
     "appId": "com.example.yourapp",
     "directories": {
       "output": "build"
