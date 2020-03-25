@@ -17,6 +17,7 @@
             <label class="port-label">端口：</label>
             <input class="port" type="text" id="port" v-model="port">
         </div>
+        <el-divider content-position="left">播放器位置</el-divider>
         <div class="line-two">
             <label>X:</label>
             <input class="x-coordinate" type="text" v-model="xCoordinate">
@@ -27,12 +28,19 @@
             <label class="position-label">高:</label>
             <input class="player-height" type="text" v-model="playerHeight">
         </div>
+        <el-divider content-position="left">信息栏位置</el-divider>
+        <div class="line-two">
+            <label>X:</label>
+            <input class="x-coordinate" type="text" v-model="msgXCoordinate">
+            <label class="position-label">Y:</label>
+            <input class="y-coordinate" type="text" v-model="msgYCoordinate">
+        </div>
         <div class="line-three">
             <span class="notify-text">{{notifyWords}}</span>
             <button class="button" @click="submit"><span class="button-text">保存</span></button>
         </div>
-
     </div>
+
 </template>
 
 <script>
@@ -49,7 +57,9 @@
         ip4: 1,
         port: 8080,
         xCoordinate: 0,
+        msgXCoordinate: 500,
         yCoordinate: 0,
+        msgYCoordinate: 0,
         playerWidth: 500,
         playerHeight: 400,
         playerName: '北京西单',
@@ -78,6 +88,10 @@
             left: parseInt(this.xCoordinate),
             width: parseInt(this.playerWidth),
             height: parseInt(this.playerHeight)
+          },
+          msgWindow: {
+            top: parseInt(this.msgYCoordinate),
+            left: parseInt(this.msgXCoordinate)
           },
           name: this.playerName,
           location: this.location,
@@ -118,7 +132,9 @@
           const ip = list.ip_address.split('.')
           this.port = list.port
           this.xCoordinate = parseInt(list.window.left)
+          this.msgXCoordinate = list.msgWindow ? parseInt(list.msgWindow.left) : 0
           this.yCoordinate = parseInt(list.window.top)
+          this.msgYCoordinate = list.msgWindow ? parseInt(list.msgWindow.top) : 0
           this.playerWidth = parseInt(list.window.width)
           this.playerHeight = parseInt(list.window.height)
           this.ip1 = ip[0]

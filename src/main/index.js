@@ -23,7 +23,7 @@ function createWindow () {
     frame: true,
     resizable: false,
     width: 560,
-    height: 256
+    height: 340
   })
 
   mainWindow.loadURL(winURL)
