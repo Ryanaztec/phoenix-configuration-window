@@ -17,6 +17,15 @@
             <label class="port-label">端口：</label>
             <input class="port" type="text" id="port" v-model="port">
         </div>
+        <el-divider content-position="left">当前配置文件MAC地址</el-divider>
+        <el-row :gutter="10">
+            <el-col :span="4">
+                <el-button style="background: rgba(64, 139, 245, 1);" @click="archiveMac" :disabled="loading" type="primary" size="small">自动获取</el-button>
+            </el-col>
+            <el-col :span="20">
+                <el-input style="font-size: 16px;" v-model="mac_address" placeholder="请输入MAC地址"></el-input>
+            </el-col>
+        </el-row>
         <el-divider content-position="left">播放器位置</el-divider>
         <div class="line-two">
             <label>X:</label>
@@ -46,6 +55,7 @@
 <script>
   import fs from 'fs'
   import {checkName} from '../service/api'
+  import {getMacAddress} from '../service/common'
 
   const config = 'D:/player-data/config/config.json'
   export default {
@@ -68,7 +78,8 @@
         _location: 'BJ01',
         mac_address: '',
         notifyWords: null,
-        city: '北京'
+        city: '北京',
+        loading: false
       }
     },
     mounted () {
@@ -146,6 +157,17 @@
           this.location = list.location
           this._location = list.location
           this.mac_address = list.mac_address
+        })
+      },
+      archiveMac () {
+        this.loading = true
+        this.notifyWords = '正在获取本机MAC地址...'
+        getMacAddress().then(res => {
+          setTimeout(() => {
+            this.mac_address = res === 'False' ? '' : res
+            this.notifyWords = res === 'False' ? '获取失败, 请手动输入' : '获取成功!'
+            this.loading = false
+          }, 1000)
         })
       }
     }
