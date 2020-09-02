@@ -157,6 +157,7 @@
           this.location = list.location
           this._location = list.location
           this.mac_address = list.mac_address
+          this.city = list.city
         })
       },
       archiveMac () {
