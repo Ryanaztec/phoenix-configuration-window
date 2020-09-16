@@ -3,7 +3,7 @@
         <div class="line-four">
             <label>名称：</label>
             <input class="player-name" type="text" v-model="playerName">
-            <label class="location-label">点位：</label>
+            <label class="location-label">点位编号：</label>
             <input class="location" type="text" v-model="location">
             <label class="city-label">城市：</label>
             <input class="city" type="text" v-model="city">
@@ -182,8 +182,13 @@
         font-family: 微软雅黑, serif;
     }
 
-    .player-name, .location, .city {
+    .player-name {
         width: 110px;
+        text-align: center;
+    }
+
+    .location, .city {
+        width: 90px;
         text-align: center;
     }
 

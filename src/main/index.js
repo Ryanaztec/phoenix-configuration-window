@@ -22,6 +22,8 @@ function createWindow () {
   mainWindow = new BrowserWindow({
     frame: true,
     resizable: false,
+    top: 0,
+    left: 0,
     width: 560,
     height: 430
   })
@@ -29,10 +31,10 @@ function createWindow () {
   mainWindow.loadURL(winURL)
   mainWindow.setMenu(null)
   mainWindow.webContents.closeDevTools()
-
   mainWindow.on('closed', () => {
     mainWindow = null
   })
+  mainWindow.show()
 }
 
 app.on('ready', createWindow)
