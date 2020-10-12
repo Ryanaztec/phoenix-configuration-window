@@ -54,7 +54,7 @@
 
 <script>
   import fs from 'fs'
-  import {checkName} from '../service/api'
+  import { getInfo, updateInfo } from '../service/api'
   import {getMacAddress} from '../service/common'
 
   const config = 'D:/player-data/config/config.json'
@@ -73,9 +73,7 @@
         playerWidth: 500,
         playerHeight: 400,
         playerName: '北京西单',
-        _playerName: '北京西单',
         location: 'BJ01',
-        _location: 'BJ01',
         mac_address: '',
         notifyWords: null,
         city: '北京',
@@ -86,11 +84,8 @@
       this.readFile()
     },
     methods: {
-      submit () {
-        if (this.playerName.indexOf(this.location) === -1) { // 名称中不包含点位
-          this.playerName = this.playerName + this.location
-        }
-        const data = {
+      initData () {
+        return {
           ip_address: this.ip1 + '.' + this.ip2 + '.' + this.ip3 + '.' + this.ip4,
           mac_address: this.mac_address,
           port: this.port,
@@ -108,26 +103,19 @@
           location: this.location,
           city: this.city
         }
-
-        if (this._playerName === this.playerName) { // 没有修改
-          this.writeFile(data)
-          return
+      },
+      submit () {
+        if (this.playerName.indexOf(this.location) === -1) { // 名称中不包含点位
+          this.playerName = this.playerName + this.location
         }
-
-        checkName(this.playerName, this.location).then(res => {
-          if (res.data.code === 1) {
-            this.writeFile(data)
-          } else {
-            this.notifyWords = '名称已经存在'
-          }
-        })
+        const data = this.initData()
+        this.writeFile(data)
+        updateInfo(this.playerName, this.location, this.mac_address)
       },
       writeFile (data) {
         fs.writeFile(config, JSON.stringify(data), (err) => {
           if (err === null) {
             this.notifyWords = '保存中...'
-            this._playerName = this.playerName
-            this._location = this.location
             setTimeout(() => {
               this.notifyWords = '配置文件保存成功!'
             }, 500)
@@ -153,11 +141,28 @@
           this.ip3 = ip[2]
           this.ip4 = ip[3]
           this.playerName = list.name
-          this._playerName = list.name
           this.location = list.location
-          this._location = list.location
           this.mac_address = list.mac_address
           this.city = list.city
+
+          // 联网更新
+          getInfo(this.mac_address).then(res => {
+            if (res.data.code === 1) {
+              this.playerName = res.data.data[0].name
+              this.location = res.data.data[0].location
+              const data = this.initData()
+              fs.writeFile(config, JSON.stringify(data), (err) => {
+                if (err === null) {
+                  this.notifyWords = '自动更新中...'
+                  setTimeout(() => {
+                    this.notifyWords = '配置文件已更新!'
+                  }, 1000)
+                } else {
+                  this.notifyWords = err.toString()
+                }
+              })
+            }
+          }).catch(() => { this.notifyWords = '点位信息获取失败' })
         })
       },
       archiveMac () {
@@ -234,7 +239,7 @@
     .button {
         position: absolute;
         right: 33px;
-        width: 120px;
+        width: 100px;
         height: 30px;
         background: rgba(64, 139, 245, 1);
         border-radius: 3px;
